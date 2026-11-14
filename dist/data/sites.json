@@ -1,0 +1,15 @@
+[
+  {"id":"apollo-11","name":"Apollo 11 (Tranquility Base)","lat":0.67416,"lon":23.47314,"mission":"Apollo 11",
+   "source":"NASA NSSDC, Apollo landing site coordinates (LM; LRO-derived, Wagner et al. 2017)","sourceUrl":"https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html"},
+  {"id":"apollo-15","name":"Apollo 15 (Hadley Rille)","lat":26.13222,"lon":3.63386,"mission":"Apollo 15",
+   "source":"NASA NSSDC, Apollo landing site coordinates (LM, archived table)","sourceUrl":"https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html",
+   "note":"Value taken from an archived version of the table; check the current page."},
+  {"id":"apollo-17","name":"Apollo 17 (Taurus-Littrow)","lat":20.1908,"lon":30.77168,"mission":"Apollo 17",
+   "source":"NASA NSSDC, Apollo landing site coordinates (LM, archived table)","sourceUrl":"https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html",
+   "note":"Value taken from an archived version of the table; check the current page."},
+  {"id":"chandrayaan-3","name":"Chandrayaan-3 (Shiv Shakti Point)","lat":-69.373,"lon":32.319,"mission":"Chandrayaan-3",
+   "source":"UNOOSA registration document, IAU-accepted site name","sourceUrl":"https://www.unoosa.org/res/osoindex/data/documents/in/st/stsgser_e1198_html/ser1198E.pdf"},
+  {"id":"im-1","name":"Malapert A (IM-1 Odysseus)","lat":-80.13,"lon":1.44,"mission":"IM-1 / CLPS",
+   "source":"Launch Library 2 landing record","sourceUrl":"https://ll.thespacedevs.com/2.3.0/landings/1334/?format=api",
+   "note":"Approximate. Public sources quote about -80.1 to -80.4 deg. Replace with a LROC-derived position."}
+]

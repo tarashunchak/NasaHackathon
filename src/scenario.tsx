@@ -6,6 +6,6 @@ interface Props{
 
 export default function Scenario({title}: Props){
   return (
-
+    <div></div>
   );
 };
