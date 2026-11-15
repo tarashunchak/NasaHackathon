@@ -20,7 +20,7 @@ export default function SkyView({ cur, flat, prof }: Props) {
   return (
     <svg viewBox={`0 0 ${W} ${Ht}`} className={styles.svg}>
       <rect width={W} height={Ht} fill={c.sky} />
-      <polygon points={`0,${Ht} ${pts} ${W},${Ht}`} fill={c.ground} stroke={c.edge} strokeWidth="0.7" />
+      <polyline points={pts} fill="none" stroke={c.edge} strokeWidth="1.2" />
       {[0, 90, 180, 270].map((a, i) => <text key={a} x={a + 3} y={Ht - 4} fontSize="9" fill={c.text}>{"NESW"[i]}</text>)}
       {dot(cur.sun.az, cur.sun.el, cur.sunUp, c.sun, "Sun", 6)}
       {dot(cur.earth.az, cur.earth.el, cur.earthUp, c.earth, "Earth", 4)}

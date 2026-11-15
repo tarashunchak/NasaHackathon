@@ -4,7 +4,8 @@
 
 Compare with the app by setting the same site and start date (UTC) and reading the table at
 slider +0 h, +24 h, etc. Differences of more than ~0.1 deg mean a bug or a frame mismatch.
-Not run yet (no network access when this was written).
+Manual spot checks have been performed for two sites over 2027-01-10 through 2027-01-12.
+This utility prints reference values; it does not automatically assert a tolerance.
 """
 import argparse, json, re, urllib.parse, urllib.request
 

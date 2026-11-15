@@ -1,4 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
-html { color-scheme: dark; }
-body { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+@theme {
+	--font-mono: "DM Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+	color-scheme: light;
+	--canvas: #edf2ee;
+	--surface: #f9fbf8;
+	--surface-alt: #e4ece7;
+	--ink: #1b3026;
+	--muted: #62736a;
+	--line: #cbd6ce;
+	--line-strong: #aab9af;
+	--green: #245a42;
+	--green-strong: #183f2d;
+	--signal: #c85a36;
+	--signal-soft: #f2e3db;
+	--header-bg: rgba(237, 242, 238, 0.94);
+	--chart-cursor: #183f2d;
+}
+
+html { color-scheme: light; }
+#root, #root * {
+	transition-property: background-color, border-color, color, fill, stroke;
+	transition-duration: 220ms;
+	transition-timing-function: ease;
+}
+#root { transition: opacity 140ms ease, transform 140ms ease; }
+html.locale-changing #root { opacity: 0.72; transform: translateY(2px); }
+body {
+	margin: 0;
+	color: var(--ink);
+	font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+	background-color: var(--canvas);
+	background-image: linear-gradient(color-mix(in srgb, var(--green) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--green) 6%, transparent) 1px, transparent 1px);
+	background-size: 32px 32px;
+	background-attachment: fixed;
+}
+
+:root[data-theme="dark"] {
+	color-scheme: dark;
+	--canvas: #202a22;
+	--surface: #2a362c;
+	--surface-alt: #344237;
+	--ink: #e7eee7;
+	--muted: #b2beb3;
+	--line: #49584c;
+	--line-strong: #718174;
+	--green: #83aa8a;
+	--green-strong: #c5d8c6;
+	--signal: #dc8966;
+	--signal-soft: #4a352c;
+	--header-bg: rgba(32, 42, 34, 0.94);
+	--chart-cursor: #ead9b5;
+}
+
+button, input, select { font: inherit; }
+::selection { color: #fff; background: var(--green); }
+
+@media (prefers-reduced-motion: reduce) {
+	#root, #root * { transition-duration: 0.01ms !important; }
+}

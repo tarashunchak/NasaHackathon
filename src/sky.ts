@@ -98,8 +98,9 @@ export function nextChange(s: Sample[], i: number, key: "sunUp" | "earthUp") {
   return { up, hours: null as number | null, atLeast: s.length - 1 - i };
 }
 
-export function fmtH(h: number | null) {
-  if (h === null) return "n/a";
+export function fmtH(h: number | null, locale: "uk" | "en" = "en") {
+  if (h === null) return locale === "uk" ? "немає даних" : "n/a";
   const d = Math.floor(h / 24), r = h % 24;
-  return d ? `${d} d ${r} h` : `${r} h`;
+    if (locale === "uk") return d ? `${d}\u00a0дн ${r}\u00a0год` : `${r}\u00a0год`;
+    return d ? `${d}\u00a0d ${r}\u00a0h` : `${r}\u00a0h`;
 }

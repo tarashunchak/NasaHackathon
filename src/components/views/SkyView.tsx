@@ -1,16 +1,24 @@
+import { memo, useMemo } from "react";
 import { horizonAt, type Sample } from "../../sky";
+import { useLocale } from "../../i18n";
 
 const styles = {
-  svg: "w-full overflow-hidden rounded-xl border border-slate-800",
-  c: { sky: "#020617", ground: "#1e293b", edge: "#64748b", text: "#94a3b8", sun: "#fbbf24", earth: "#38bdf8", stroke: "#0f172a" },
+  frame: "relative overflow-hidden rounded-sm border border-[#263b45] shadow-[0_8px_24px_rgba(11,25,32,0.12)]",
+  svg: "block w-full",
+  c: { sky: "#121a16", edge: "#64766b", text: "#d8e2d9", sun: "#e6b45e", earth: "#91a879", stroke: "#0b100d" },
 };
 
 interface Props { cur: Sample; flat: number; prof?: number[] }
 
-export default function SkyView({ cur, flat, prof }: Props) {
-  const W = 360, Ht = 130, top = 40, bot = -15, c = styles.c;
-  const y = (el: number) => ((top - Math.max(bot, Math.min(top, el))) / (top - bot)) * Ht;
-  const pts = Array.from({ length: 37 }, (_, i) => `${i * 10},${y(horizonAt(i * 10, flat, prof))}`).join(" ");
+function SkyView({ cur, flat, prof }: Props) {
+  const { locale, t } = useLocale();
+  const W = 360, Ht = 130, graphHeight = 100, top = 90, bot = -15, c = styles.c;
+  const compass = locale === "uk" ? ["Пн", "Сх", "Пд", "Зх"] : ["N", "E", "S", "W"];
+  const y = (el: number) => ((top - Math.max(bot, Math.min(top, el))) / (top - bot)) * graphHeight;
+  const pts = useMemo(
+    () => Array.from({ length: 37 }, (_, i) => `${i * 10},${y(horizonAt(i * 10, flat, prof))}`).join(" "),
+    [flat, prof],
+  );
   const dot = (az: number, el: number, up: boolean, color: string, label: string, r: number) => (
     <g opacity={up ? 1 : 0.35}>
       <circle cx={az} cy={y(el)} r={r} fill={color} stroke={c.stroke} strokeWidth="0.5" />
@@ -18,12 +26,24 @@ export default function SkyView({ cur, flat, prof }: Props) {
     </g>
   );
   return (
-    <svg viewBox={`0 0 ${W} ${Ht}`} className={styles.svg}>
-      <rect width={W} height={Ht} fill={c.sky} />
-      <polygon points={`0,${Ht} ${pts} ${W},${Ht}`} fill={c.ground} stroke={c.edge} strokeWidth="0.7" />
-      {[0, 90, 180, 270].map((a, i) => <text key={a} x={a + 3} y={Ht - 4} fontSize="9" fill={c.text}>{"NESW"[i]}</text>)}
-      {dot(cur.sun.az, cur.sun.el, cur.sunUp, c.sun, "Sun", 6)}
-      {dot(cur.earth.az, cur.earth.el, cur.earthUp, c.earth, "Earth", 4)}
-    </svg>
+    <div className={styles.frame}>
+      <svg viewBox={`-12 0 ${W + 24} ${Ht}`} className={styles.svg}>
+        <rect x={-12} width={W + 24} height={Ht} fill={c.sky} />
+        {(prof || flat !== 0) && <polyline points={pts} fill="none" stroke={c.edge} strokeWidth="0.8" opacity="0.75" />}
+        {[0, 90, 180, 270].map((azimuth, index) => {
+          const label = compass[index];
+          return (
+            <g key={label}>
+              <path d={`M${azimuth} ${graphHeight}v4`} stroke={c.edge} strokeWidth="0.8" />
+              <text x={azimuth} y={graphHeight + 17} textAnchor="middle" dominantBaseline="middle" fontSize="10" fontFamily="DM Mono, monospace" fill={c.text}>{label}</text>
+            </g>
+          );
+        })}
+        {dot(cur.sun.az, cur.sun.el, cur.sunUp, c.sun, t("sun"), 6)}
+        {dot(cur.earth.az, cur.earth.el, cur.earthUp, c.earth, t("earth"), 4)}
+      </svg>
+    </div>
   );
 }
+
+export default memo(SkyView);

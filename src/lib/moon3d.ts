@@ -10,6 +10,50 @@ export const MOON_TEXTURE = {
   lonOffsetDeg: 0,
 };
 
+const EARTH_TEXTURE_URL = "https://raw.githubusercontent.com/mrdoob/three.js/refs/heads/master/examples/textures/planets/earth_day_4096.jpg";
+
+export function createSunTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 256;
+  const context = canvas.getContext("2d");
+
+  if (context) {
+    const base = context.createLinearGradient(0, 0, 0, canvas.height);
+    base.addColorStop(0, "#ffb52e");
+    base.addColorStop(0.5, "#ff6b1a");
+    base.addColorStop(1, "#e83b12");
+    context.fillStyle = base;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    let seed = 42;
+    const random = () => {
+      seed = (seed * 1664525 + 1013904223) % 4294967296;
+      return seed / 4294967296;
+    };
+    for (let index = 0; index < 1800; index++) {
+      const radius = 1 + random() * 7;
+      context.beginPath();
+      context.ellipse(random() * canvas.width, random() * canvas.height, radius * 2.2, radius, random() * Math.PI, 0, Math.PI * 2);
+      context.fillStyle = random() > 0.48 ? "rgba(255, 232, 120, 0.24)" : "rgba(170, 35, 10, 0.2)";
+      context.fill();
+    }
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 8;
+  return texture;
+}
+
+export function loadEarthTexture(onLoad: (texture: THREE.Texture) => void) {
+  new THREE.TextureLoader().load(EARTH_TEXTURE_URL, (texture) => {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 8;
+    onLoad(texture);
+  });
+}
+
 // Moon body-fixed (x: lon 0, y: lon 90E, z: north) to three.js (y up); keeps handedness
 export const toThree = (v: number[]) => new THREE.Vector3(v[0], v[2], -v[1]);
 

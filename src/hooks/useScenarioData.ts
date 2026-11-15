@@ -1,16 +1,36 @@
-import { useMemo } from "react";
-import { series, stats, type Sample, type Stats } from "../sky";
-import { HOURS, HR } from "../constants";
+import { useEffect, useState } from "react";
+import type { Sample, Stats } from "../sky";
 import type { Scenario } from "../types";
+import type { ScenarioWorkerRequest, ScenarioWorkerResult } from "../workers/scenario.worker";
 
-export interface ScenarioData { data: Sample[]; st: Stats | null }
+export interface ScenarioData extends ScenarioWorkerResult { pending: boolean }
 
 export function useScenarioData(s: Scenario, mask: number[] | null): ScenarioData {
-  return useMemo(() => {
-    const t0 = Date.parse(s.base + ":00Z");
-    if (isNaN(t0)) return { data: [], st: null };
-    const start = t0 - (t0 % HR);
-    const data = series(s.lat, s.lon, start, HOURS + 240, s.flat, mask ?? undefined);
-    return { data, st: stats(data.slice(0, HOURS + 1)) };
+  const [result, setResult] = useState<ScenarioData>({ data: [], st: null, pending: true });
+
+  useEffect(() => {
+    const request: ScenarioWorkerRequest = { lat: s.lat, lon: s.lon, base: s.base, flat: s.flat, mask };
+    if (!Number.isFinite(Date.parse(`${request.base}:00Z`))) {
+      setResult({ data: [], st: null, pending: false });
+      return;
+    }
+
+    let active = true;
+    setResult((current) => ({ ...current, pending: true }));
+    const worker = new Worker(new URL("../workers/scenario.worker.ts", import.meta.url), { type: "module" });
+    worker.onmessage = (event: MessageEvent<ScenarioWorkerResult>) => {
+      if (active) setResult({ ...event.data, pending: false });
+    };
+    worker.onerror = () => {
+      if (active) setResult({ data: [], st: null, pending: false });
+    };
+    worker.postMessage(request);
+
+    return () => {
+      active = false;
+      worker.terminate();
+    };
   }, [s.lat, s.lon, s.base, s.flat, mask]);
+
+  return result;
 }

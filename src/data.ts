@@ -1,14 +1,42 @@
 export interface Site {
   id: string; name: string; lat: number; lon: number;
   mission?: string; source: string; sourceUrl: string; note?: string;
+  nameUk?: string; sourceUk?: string; noteUk?: string;
 }
 
 const base = import.meta.env.BASE_URL;
 
+const siteTranslations: Record<string, Pick<Site, "nameUk" | "sourceUk" | "noteUk">> = {
+  "apollo-11": {
+    nameUk: "Apollo 11 (База Спокою)",
+    sourceUk: "NASA NSSDC: координати місця посадки Apollo 11 (LM; за даними LRO, Wagner та ін., 2017)",
+  },
+  "apollo-15": {
+    nameUk: "Apollo 15 (звивина Хедлі)",
+    sourceUk: "NASA NSSDC: координати місця посадки Apollo 15 (LM, архівна таблиця)",
+    noteUk: "Значення взято з архівної версії таблиці; перевірте поточну сторінку.",
+  },
+  "apollo-17": {
+    nameUk: "Apollo 17 (Тавр-Літтров)",
+    sourceUk: "NASA NSSDC: координати місця посадки Apollo 17 (LM, архівна таблиця)",
+    noteUk: "Значення взято з архівної версії таблиці; перевірте поточну сторінку.",
+  },
+  "chandrayaan-3": {
+    nameUk: "Chandrayaan-3 (точка Шив Шакті)",
+    sourceUk: "Документ реєстрації UNOOSA; назву ділянки затвердив Міжнародний астрономічний союз",
+  },
+  "im-1": {
+    nameUk: "Малаперт A (IM-1 «Одіссей»)",
+    sourceUk: "Запис про посадку в Launch Library 2",
+    noteUk: "Координати приблизні: у відкритих джерелах наводять значення від −80,1° до −80,4°. Замініть на координати, визначені за даними LROC.",
+  },
+};
+
 export async function loadSites(): Promise<Site[]> {
   const r = await fetch(`${base}data/sites.json`);
   if (!r.ok) throw new Error(`sites.json: HTTP ${r.status}`);
-  return r.json();
+  const sites = await r.json() as Site[];
+  return sites.map((site) => ({ ...site, ...siteTranslations[site.id] }));
 }
 
 /** Horizon mask: { values: number[] } with values[i] = horizon elevation (deg) at azimuth i*360/n.

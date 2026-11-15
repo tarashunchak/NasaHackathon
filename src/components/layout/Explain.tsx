@@ -1,22 +1,25 @@
+import { useLocale } from "../../i18n";
+
 const styles = {
-  root: "border-b border-slate-800 bg-slate-900/60",
-  inner: "mx-auto grid max-w-7xl gap-4 px-6 py-5 text-sm leading-relaxed text-slate-300 md:grid-cols-2",
-  heading: "font-medium text-white",
+  root: "border-y border-[var(--line)] bg-[var(--surface-alt)]",
+  inner: "mx-auto grid max-w-[1480px] gap-4 px-4 py-5 text-sm leading-relaxed text-[var(--muted)] md:grid-cols-2 md:px-8",
+  heading: "mb-1 font-semibold text-[var(--green-strong)]",
 };
 
 const items = [
-  ["Why the poles are hard", "The Moon's axis is tilted only about 1.5°, so near the south pole the Sun circles the horizon and never climbs more than a few degrees. Hills and crater rims decide who gets light, so a few kilometers or a few days can flip a site from lit to dark."],
-  ["Power", "Panels need the Sun above the local horizon. A low Sun gives weak power and long shadows. There is no atmosphere, so no twilight: sunset is abrupt."],
-  ["Communication", "A direct link needs Earth above the horizon. From the pole, Earth hugs the horizon and swings with libration, so it comes and goes over the month."],
-  ["Reading the tool", "The dark band under the sky is terrain. A body is up when it is above that band. Longest gap is the longest stretch without Sun or Earth in 30 days."],
-];
+  ["explainPolesTitle", "explainPolesBody"],
+  ["explainPowerTitle", "explainPowerBody"],
+  ["explainCommsTitle", "explainCommsBody"],
+  ["explainReadingTitle", "explainReadingBody"],
+] as const;
 
 export default function Explain() {
+  const { t } = useLocale();
   return (
     <section className={styles.root}>
       <div className={styles.inner}>
-        {items.map(([h, t]) => (
-          <div key={h}><h3 className={styles.heading}>{h}</h3><p>{t}</p></div>
+        {items.map(([heading, body]) => (
+          <div key={heading}><h3 className={styles.heading}>{t(heading)}</h3><p>{t(body)}</p></div>
         ))}
       </div>
     </section>
